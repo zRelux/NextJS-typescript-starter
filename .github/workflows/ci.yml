@@ -1,0 +1,79 @@
+name: Node Continuous Integration
+
+on:
+  push:
+    branches: [master, stg]
+  pull_request:
+    branches: [master]
+
+jobs:
+  checkout_repo_and_install:
+    name: Checkout repo and install dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            node_modules-
+
+      - name: Yarn - Install
+        run: yarn install --frozen-lockfile
+
+  type_check:
+    name: Type checking the code
+    runs-on: ubuntu-latest
+    needs: checkout_repo_and_install
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Load node_modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn type-check
+
+  lint:
+    name: Lint the code
+    runs-on: ubuntu-latest
+    needs: checkout_repo_and_install
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Load node_modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn lint
+
+  test:
+    name: Unit test the code
+    runs-on: ubuntu-latest
+    needs: checkout_repo_and_install
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Load node_modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn test

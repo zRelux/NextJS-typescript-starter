@@ -1,0 +1,19 @@
+# This is a simple example to get you started.
+
+version: 1
+update_configs:
+  - package_manager: 'javascript'
+    directory: '/'
+    target_branch: 'stg'
+    version_requirement_updates: 'auto'
+    update_schedule: 'live'
+    commit_message:
+      prefix: 'chore'
+      include_scope: true
+    automerged_updates:
+      - match:
+          dependency_type: 'development'
+          update_type: 'semver:minor'
+      - match:
+          dependency_type: 'production'
+          update_type: 'semver:patch'

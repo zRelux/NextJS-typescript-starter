@@ -1,0 +1,20 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": "./src",
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    ],
+    [
+      "styled-components",
+      {
+        "ssr": true,
+        "displayName": true,
+        "preprocess": false
+      }
+    ]
+  ]
+}
